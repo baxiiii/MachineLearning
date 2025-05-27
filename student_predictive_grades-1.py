@@ -65,37 +65,37 @@ def make_predictions(model, df, features):
     except Exception as e:
         messagebox.showerror("Error", f"Failed to make predictions: {e}")
 
-# Please add funtion comment
+# Creates the main application window and sets up the UI components
 root = tk.Tk()
 root.title("Student Predictive Grades")
 
-# Please add funtion comment
+# loads the dataset when the user clicks the button
 load_button = tk.Button(root, text="Load Dataset", command=lambda: load_dataset())
 load_button.pack(pady=10)
 
-#Please add funtion comment
+# Features input section
 tk.Label(root, text="Features (comma-separated):").pack()
 features_entry = tk.Entry(root)
 features_entry.pack(pady=5)
 
-# Please add funtion comment
+# target input section
 tk.Label(root, text="Target:").pack()
 target_entry = tk.Entry(root)
 target_entry.pack(pady=5)
 
-# Please add funtion comment
+# Train model button
 train_button = tk.Button(root, text="Train Model", command=lambda: train_model(df,
 features_entry.get().split(','), target_entry.get()))
 train_button.pack(pady=10)
 
-# Please add funtion comment
+# make predictions button
 predict_button = tk.Button(root, text="Make Predictions", command=lambda:
 make_predictions(model, df, features_entry.get().split(',')))
 predict_button.pack(pady=10)
 
-# Please add funtion comment
+# Text widget to display results
 result_text = tk.Text(root, height=20, width=80)
 result_text.pack(pady=10)
 
-# Please add funtion comment
+# Run the application
 root.mainloop()
