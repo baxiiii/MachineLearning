@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelEncoder
 
 #add funtion
 
-# Please add funtion comment
+# Loads a dataset from a file selected by the user
 def load_dataset():
     file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv"),
 ("Excel files", "*.xlsx;*.xls")])
@@ -24,7 +24,7 @@ def load_dataset():
             messagebox.showerror("Error", f"Failed to load dataset: {e}")
     return None
 
-# Please add funtion comment
+# Trains a Random Forest model using the provided features and target variable
 def train_model(df, features, target):
     try:
         X = df[features]
@@ -40,7 +40,7 @@ def train_model(df, features, target):
         messagebox.showerror("Error", f"Failed to train model: {e}")
         return None
 
-# Please add funtion comment
+# Makes predictions using the trained model and the provided features
 def make_predictions(model, df, features):
     try:
         X_new = df[features]
