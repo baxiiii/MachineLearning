@@ -6,10 +6,15 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import LabelEncoder
 
+# Global variables to hold the dataset and model
+df = None
+model = None
+
 #add funtion
 
 # Loads a dataset from a file selected by the user
 def load_dataset():
+    global df
     file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv"),
 ("Excel files", "*.xlsx;*.xls")])
     if file_path:
@@ -26,6 +31,10 @@ def load_dataset():
 
 # Trains a Random Forest model using the provided features and target variable
 def train_model(df, features, target):
+    global model
+    if df is None:
+        messagebox.showerror("Error", "No dataset loaded. Please load a dataset first.")
+        return None
     try:
         X = df[features]
         y = df[target]
@@ -42,6 +51,12 @@ def train_model(df, features, target):
 
 # Makes predictions using the trained model and the provided features
 def make_predictions(model, df, features):
+    if model is None:
+        messagebox.showerror("Error", "Model not trained. Please train the model first.")
+        return None
+    if df is None:
+        messagebox.showerror("Error", "No dataset loaded. Please load a dataset first.")
+        return None
     try:
         X_new = df[features]
         predictions = model.predict(X_new)
