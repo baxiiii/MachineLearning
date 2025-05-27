@@ -8,10 +8,10 @@ from sklearn.preprocessing import LabelEncoder
 
 #add funtion
 
-
 # Please add funtion comment
 def load_dataset():
-    file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv"), ("Excel files", "*.xlsx;*.xls")])
+    file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv"),
+("Excel files", "*.xlsx;*.xls")])
     if file_path:
         try:
             if file_path.endswith('.csv'):
@@ -38,7 +38,7 @@ def train_model(df, features, target):
         return model
     except Exception as e:
         messagebox.showerror("Error", f"Failed to train model: {e}")
-    return None
+        return None
 
 # Please add funtion comment
 def make_predictions(model, df, features):
@@ -69,11 +69,13 @@ target_entry = tk.Entry(root)
 target_entry.pack(pady=5)
 
 # Please add funtion comment
-train_button = tk.Button(root, text="Train Model", command=lambda: train_model(df, features_entry.get().split(','), target_entry.get()))
+train_button = tk.Button(root, text="Train Model", command=lambda: train_model(df,
+features_entry.get().split(','), target_entry.get()))
 train_button.pack(pady=10)
 
 # Please add funtion comment
-predict_button = tk.Button(root, text="Make Predictions", command=lambda: make_predictions(model, df, features_entry.get().split(',')))
+predict_button = tk.Button(root, text="Make Predictions", command=lambda:
+make_predictions(model, df, features_entry.get().split(',')))
 predict_button.pack(pady=10)
 
 # Please add funtion comment
@@ -82,4 +84,3 @@ result_text.pack(pady=10)
 
 # Please add funtion comment
 root.mainloop()
-
