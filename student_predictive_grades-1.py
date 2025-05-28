@@ -66,6 +66,9 @@ def load_dataset():
                 df = pd.read_csv(file_path)
             else:
                 df = pd.read_excel(file_path, engine='openpyxl')
+            
+            df = preprocess_data(df)
+             
             messagebox.showinfo("Success", "Dataset loaded successfully *but did you check the script!")
             return df
         except Exception as e:
@@ -79,8 +82,36 @@ def train_model(df, features, target):
         messagebox.showerror("Error", "No dataset loaded. Please load a dataset first.")
         return None
     try:
+         # Clean feature names (remove whitespace)
+        features = [f.strip() for f in features]
+        target = target.strip()
+        
+        # Check if columns exist
+        missing_cols = [col for col in features if col not in df.columns]
+        if missing_cols:
+            messagebox.showerror("Error", f"Features not found in dataset: {missing_cols}")
+            return None
+        
+        if target not in df.columns:
+            messagebox.showerror("Error", f"Target column '{target}' not found in dataset.")
+            return None
+        
         X = df[features]
         y = df[target]
+        
+        # Handle categorical variables with LabelEncoder
+        label_encoders = {}
+        for col in X.columns:
+            if X[col].dtype == 'object':
+                le = LabelEncoder()
+                X[col] = le.fit_transform(X[col].astype(str))
+                label_encoders[col] = le
+        
+        # Handle target variable if it's categorical
+        if y.dtype == 'object':
+            le_target = LabelEncoder()
+            y = le_target.fit_transform(y.astype(str))
+            
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
         model = RandomForestClassifier()
         model.fit(X_train, y_train)
@@ -101,7 +132,17 @@ def make_predictions(model, df, features):
         messagebox.showerror("Error", "No dataset loaded. Please load a dataset first.")
         return None
     try:
+        # Clean feature names (remove whitespace)
+        features = [f.strip() for f in features]
+        
         X_new = df[features]
+        
+        # Handle categorical variables with LabelEncoder (same as training)
+        for col in X_new.columns:
+            if X_new[col].dtype == 'object':
+                le = LabelEncoder()
+                X_new[col] = le.fit_transform(X_new[col].astype(str))
+                
         predictions = model.predict(X_new)
         result_text.delete(1.0, tk.END)
         result_text.insert(tk.END, f"Predictions:\n{predictions}")
