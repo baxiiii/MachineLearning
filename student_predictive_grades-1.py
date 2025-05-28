@@ -10,7 +10,50 @@ from sklearn.preprocessing import LabelEncoder
 df = None
 model = None
 
-#add funtion
+# Function to preprocess the dataset
+def preprocess_data(df):
+    """Clean and preprocess the dataset"""
+    # Remove completely empty rows
+    df = df.dropna(how='all')
+    
+    # Handle 'varies' and 'unknown' values in study_hours_per_day
+    if 'study_hours_per_day' in df.columns:
+        # Convert 'varies' to NaN, then fill with median
+        df['study_hours_per_day'] = df['study_hours_per_day'].replace('varies', pd.NA)
+        df['study_hours_per_day'] = pd.to_numeric(df['study_hours_per_day'], errors='coerce')
+        df['study_hours_per_day'].fillna(df['study_hours_per_day'].median(), inplace=True)
+    
+    # Handle 'unknown' values in age
+    if 'age' in df.columns:
+        df['age'] = df['age'].replace('unknown', pd.NA)
+        df['age'] = pd.to_numeric(df['age'], errors='coerce')
+        df['age'].fillna(df['age'].median(), inplace=True)
+    
+    # Handle exam_score outliers (200 seems to be a placeholder for missing data)
+    if 'exam_score' in df.columns:
+        df['exam_score'] = pd.to_numeric(df['exam_score'], errors='coerce')
+        # Replace scores of 200 with NaN and fill with median
+        df.loc[df['exam_score'] == 200, 'exam_score'] = pd.NA
+        df['exam_score'].fillna(df['exam_score'].median(), inplace=True)
+    
+    # Handle missing values in categorical columns
+    categorical_columns = ['gender', 'part_time_job', 'diet_quality', 'parental_education_level', 
+                          'internet_quality', 'extracurricular_participation']
+    
+    for col in categorical_columns:
+        if col in df.columns:
+            # Fill missing values with mode (most frequent value)
+            if df[col].mode().empty:
+                df[col].fillna('Unknown', inplace=True)
+            else:
+                df[col].fillna(df[col].mode()[0], inplace=True)
+    
+    # Fill remaining numeric columns with median
+    numeric_columns = df.select_dtypes(include=['float64', 'int64']).columns
+    for col in numeric_columns:
+        df[col].fillna(df[col].median(), inplace=True)
+    
+    return df
 
 # Loads a dataset from a file selected by the user
 def load_dataset():
